@@ -3,8 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart' as loc;
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 class OpenStreetMapWidget extends StatefulWidget {
   const OpenStreetMapWidget({super.key});
@@ -15,28 +15,27 @@ class OpenStreetMapWidget extends StatefulWidget {
 
 class _OpenStreetMapWidgetState extends State<OpenStreetMapWidget> {
   final MapController _mapController = MapController();
-  final Location _location = Location();
+  final loc.Location _location = loc.Location();
   bool isLoading = true;
   LatLng? _currentPosition;
-  LatLng? _destination;
-  List<LatLng> _routes = [];
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _initializeLocation();
   }
 
   Future<void> _initializeLocation() async {
     if (!await _checkRequestPermission()) return;
 
-    _location.onLocationChanged.listen((LocationData locationData) {
+    _location.onLocationChanged.listen((loc.LocationData locationData) {
       if (locationData.latitude != null && locationData.longitude != null) {
         setState(() {
           _currentPosition =
               LatLng(locationData.latitude!, locationData.longitude!);
-          isLoading = false; // stop loading once location is obtained
+          isLoading = false; // Stop loading once location is obtained
         });
+        _mapController.move(_currentPosition!, 15);
       }
     });
   }
@@ -49,20 +48,23 @@ class _OpenStreetMapWidgetState extends State<OpenStreetMapWidget> {
       });
       _mapController.move(_currentPosition!, 15);
     } catch (e) {
-      const SnackBar(content: Text("Location is not available"));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location is not available")),
+      );
     }
   }
 
   Future<bool> _checkRequestPermission() async {
-    PermissionStatus status = await Permission.locationWhenInUse.status;
+    perm.PermissionStatus status =
+        await perm.Permission.locationWhenInUse.status;
 
     if (status.isGranted) {
       return true;
     } else if (status.isDenied) {
-      status = await Permission.locationWhenInUse.request();
+      status = await perm.Permission.locationWhenInUse.request();
       return status.isGranted;
     } else if (status.isPermanentlyDenied) {
-      openAppSettings();
+      perm.openAppSettings();
       return false;
     }
 
