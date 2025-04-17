@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "63894988040",
+    "project_id": "ciputrapatroli",
+    "storage_bucket": "ciputrapatroli.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63894988040:android:8b81052d79bdeff87f78bd",
+        "android_client_info": {
+          "package_name": "com.example.ciputra_patroli"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKrLJuzSASCzq1jhDVqMrVP5VtKOHvpfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
